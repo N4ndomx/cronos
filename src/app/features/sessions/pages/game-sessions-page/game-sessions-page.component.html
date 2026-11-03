@@ -1,0 +1,202 @@
+<div class="home-container">
+  <app-club-header />
+
+  <!-- Estado del Salón Card -->
+  <section class="salon-status-card">
+    <div class="status-card-header">
+      <span class="status-title-label">ESTADO DEL SALÓN</span>
+      <span class="status-title-label">OCUPACIÓN</span>
+    </div>
+
+    <div class="status-metrics-row">
+      <div class="metrics-left">
+        <span class="metric-big-number">{{ activeSessionCount() }}</span>
+        <span class="metric-unit-text">de {{ totalStations() }} estaciones con sesión activa</span>
+      </div>
+      <div class="metrics-right">
+        <span [class]="'metric-percentage level-' + occupancyLevel()">{{ occupancyPercentage() }}%</span>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="status-progress-track">
+      <div [class]="'status-progress-fill level-' + occupancyLevel()" [style.width.%]="occupancyPercentage()"></div>
+    </div>
+
+    <!-- Sub-stats footer -->
+    <div class="status-card-footer">
+      <div class="sub-stat-col">
+        <span class="sub-stat-label">Sesiones activas</span>
+        <span class="sub-stat-value">{{ activeSessionCount() }}</span>
+      </div>
+      <div class="sub-stat-col">
+        <span class="sub-stat-label">Estaciones libres</span>
+        <span class="sub-stat-value">{{ availableStationCount() }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter Pills -->
+  <div class="filter-pills-row">
+    <button type="button" class="filter-pill" [class.active]="activeFilter() === 'active'"
+      (click)="setFilter('active')">
+      Activas ({{ activeSessionCount() }})
+    </button>
+
+    <button type="button" class="filter-pill" [class.active]="activeFilter() === 'all'" (click)="setFilter('all')">
+      Todas ({{ totalStations() }})
+    </button>
+  </div>
+
+  <!-- Stations List / Matrix -->
+  <main class="stations-list">
+    @for (station of stations(); track station.id) {
+    @if (station.status === 'in_use' || station.status === 'paused') {
+    <!-- Active Session Card -->
+    <article class="station-card" [class.expanded]="expandedStationId() === station.id"
+      (click)="toggleStationExpand(station.id)">
+      <div class="card-main-row">
+        <!-- Left Station Badge -->
+        <div class="station-badge">
+          <span class="station-badge-prefix">Estación</span>
+          <span class="station-badge-num">{{ station.displayNumber }}</span>
+        </div>
+
+        <!-- Time and Price Info -->
+        <div class="station-info-center">
+          <div class="time-and-type">
+            <span class="timer-display">{{
+              formatDuration(
+              station.session?.elapsedSeconds || 0,
+              expandedStationId() === station.id
+              )
+              }}</span>
+
+            <!-- Game Icon representation -->
+            @if (station.gameType === 'pool') {
+            <span class="game-ball-icon pool-ball" title="Billar Pool">8</span>
+            } @else if (station.gameType === 'carambola') {
+            <span class="game-ball-icon carambola-balls" title="Carambola">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot white"></span>
+            </span>
+            } @else if (station.gameType === 'pingpong') {
+            <span class="game-ball-icon mini-icon material-symbols-outlined" title="Ping Pong">sports_tennis</span>
+            } @else if (station.gameType === 'futbolin') {
+            <span class="game-ball-icon mini-icon material-symbols-outlined" title="Futbolín">sports_soccer</span>
+            }
+          </div>
+
+          <div class="price-display">
+            {{ formatCurrency(station.session?.totalCost || 0) }}
+          </div>
+        </div>
+
+        <!-- Cobrar Action Button -->
+        <div class="station-action-right">
+          <button type="button" class="btn-cobrar" [class.btn-cobrar-highlight]="expandedStationId() === station.id"
+            (click)="openBilling(station, $event)">
+            Cobrar
+          </button>
+        </div>
+      </div>
+
+      <!-- Expanded Time Control Panel -->
+      @if (expandedStationId() === station.id) {
+      <div class="expanded-control-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="material-symbols-outlined">schedule</span>
+            <span>CONTROL DE TIEMPO</span>
+          </div>
+
+          <div class="panel-status-chip" [class.paused]="station.status === 'paused'">
+            <span class="panel-status-dot"></span>
+            <span>{{ station.status === 'paused' ? 'Pausada' : 'Corriendo' }}</span>
+          </div>
+        </div>
+
+        <div class="panel-buttons-row">
+          <button type="button" class="btn-panel-action btn-pause" (click)="toggleSessionPause(station.id, $event)">
+            <span class="material-symbols-outlined">{{
+              station.status === 'paused' ? 'play_arrow' : 'pause'
+              }}</span>
+            <span>{{ station.status === 'paused' ? 'Reanudar' : 'Pausar' }}</span>
+          </button>
+
+          <button type="button" class="btn-panel-action btn-stop">
+            <span class="material-symbols-outlined"> display_group </span>
+            <span>Información de la Sesion</span>
+          </button>
+        </div>
+      </div>
+      }
+    </article>
+    }
+    }
+  </main>
+
+  <!-- Floating Action Button (+ Nueva Sesión) -->
+  @if (!isOverlayOpen()) {
+  <button type="button" class="fab-new-session" routerLink="new" aria-label="Abrir nueva sesión">
+    <span class="material-symbols-outlined">add</span>
+    <span class="fab-label">Nueva Sesión</span>
+  </button>
+  }
+
+  <!-- Quick Billing Dialog -->
+  @if (billingStation()) {
+  <div class="billing-modal-backdrop" (click)="closeBilling()">
+    <div class="billing-modal" (click)="$event.stopPropagation()">
+      <header class="billing-header">
+        <div class="billing-header-info">
+          <h2>Cobro de sesión · Estación {{ billingStation()?.id }}</h2>
+          <p>Liquidación de la sesión de juego</p>
+        </div>
+        <button type="button" class="btn-close-modal" (click)="closeBilling()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </header>
+
+      <div class="billing-body">
+        <div class="billing-row">
+          <span>Tiempo transcurrido</span>
+          <strong>{{ formatDuration(billingStation()?.session?.elapsedSeconds || 0) }}</strong>
+        </div>
+        <div class="billing-row">
+          <span>Modalidad de juego</span>
+          <strong>{{
+            billingStation()?.gameType === 'pool'
+            ? 'Billar Pool'
+            : billingStation()?.gameType === 'carambola'
+            ? 'Carambola'
+            : billingStation()?.gameType
+            }}</strong>
+        </div>
+        <div class="billing-row">
+          <span>Jugadores</span>
+          <strong>{{ billingStation()?.session?.players?.length || 1 }} participantes</strong>
+        </div>
+
+        <div class="billing-total-box">
+          <span class="total-label">Total a Pagar</span>
+          <span class="total-amount">{{
+            formatCurrency(billingStation()?.session?.totalCost || 0)
+            }}</span>
+        </div>
+      </div>
+
+      <footer class="billing-footer">
+        <button type="button" class="btn-cancel-billing" (click)="closeBilling()">Volver</button>
+        <button type="button" class="btn-confirm-billing" (click)="confirmCheckout()">
+          <span class="material-symbols-outlined">check_circle</span>
+          <span>Cobrar y Liberar</span>
+        </button>
+      </footer>
+    </div>
+  </div>
+  }
+
+  <router-outlet />
+</div>

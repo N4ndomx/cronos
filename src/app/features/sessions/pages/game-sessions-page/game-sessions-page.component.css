@@ -1,0 +1,722 @@
+.home-container {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px 16px calc(150px + env(safe-area-inset-bottom, 0px)) 16px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* On Desktop / Tablet: widen container responsively */
+@media (min-width: 768px) {
+  .home-container {
+    max-width: 860px;
+    padding: 24px 24px 160px 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-container {
+    max-width: 1040px;
+  }
+}
+
+/* Estado del Salón Card */
+.salon-status-card {
+  background-color: #1b4332;
+  border-radius: 16px;
+  padding: 16px 18px;
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(27, 67, 50, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.status-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-title-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+}
+
+.status-metrics-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.metrics-left {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.metric-big-number {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.metric-unit-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.metric-percentage {
+  font-size: 26px;
+  font-weight: 800;
+  color: #a5d0b9;
+  line-height: 1;
+  transition: color 0.25s ease;
+}
+
+/* Semáforo de ocupación: verde disponible, ámbar medio, rojo saturado */
+.metric-percentage.level-low {
+  color: #a5d0b9;
+}
+
+.metric-percentage.level-medium {
+  color: #f6c453;
+}
+
+.metric-percentage.level-high {
+  color: #ff8f85;
+}
+
+.status-progress-track {
+  width: 100%;
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.18);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-top: 2px;
+}
+
+.status-progress-fill {
+  height: 100%;
+  background-color: #a5d0b9;
+  border-radius: 9999px;
+  transition:
+    width 0.4s ease,
+    background-color 0.25s ease;
+}
+
+.status-progress-fill.level-low {
+  background-color: #a5d0b9;
+}
+
+.status-progress-fill.level-medium {
+  background-color: #f6c453;
+}
+
+.status-progress-fill.level-high {
+  background-color: #ff8f85;
+}
+
+.status-card-footer {
+  display: flex;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 10px;
+  margin-top: 4px;
+}
+
+.sub-stat-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sub-stat-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.sub-stat-value {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* Filter Pills */
+.filter-pills-row {
+  display: flex;
+  gap: 10px;
+  margin: 16px 0 12px;
+}
+
+.filter-pill {
+  padding: 6px 16px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+  background-color: #ffffff;
+  color: #43474d;
+  border: 1px solid #dfe2e8;
+}
+
+.filter-pill.active {
+  background-color: #1b4332;
+  color: #ffffff;
+  border-color: #1b4332;
+}
+
+/* Stations List */
+.stations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (min-width: 768px) {
+  .stations-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    align-items: start;
+  }
+}
+
+@media (min-width: 1024px) {
+  .stations-list {
+    grid-template-columns: repeat(2, 1fr);
+    align-items: start;
+  }
+}
+
+/* Station Card */
+.station-card {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  border: 1px solid #e5e8ee;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .station-card {
+    height: fit-content;
+  }
+}
+
+.station-card:hover {
+  border-color: #c3c7ce;
+}
+
+.station-card.expanded {
+  border-color: #1b4332;
+  box-shadow: 0 4px 14px rgba(27, 67, 50, 0.08);
+}
+
+.card-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Station badge: ticket con muescas laterales */
+.station-badge {
+  position: relative;
+  width: 68px;
+  height: 56px;
+  background-color: #1b4332;
+  color: #ffffff;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  flex-shrink: 0;
+  box-shadow: 0 3px 8px rgba(27, 67, 50, 0.18);
+}
+
+.station-badge::before,
+.station-badge::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+.station-badge::before {
+  left: -8px;
+}
+
+.station-badge::after {
+  right: -8px;
+}
+
+.station-badge-prefix {
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  opacity: 0.95;
+  line-height: 1;
+}
+
+.station-badge-num {
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  line-height: 1;
+}
+
+/* Available badge */
+.station-badge-available {
+  background-color: #ebedf4;
+  color: #43474d;
+}
+
+.station-badge-available.badge-tourney {
+  background-color: #f1f4f9;
+  color: #73777e;
+}
+
+/* Info Center */
+.station-info-center {
+  flex: 1;
+  min-width: 0;
+  margin-left: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.time-and-type {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timer-display {
+  display: inline-block;
+  min-width: 8ch;
+  /* reserva el ancho de "00:00:00" aunque solo se muestre "00:00" */
+  font-size: 16px;
+  font-weight: 700;
+  color: #181c20;
+  letter-spacing: -0.2px;
+  text-align: left;
+}
+
+/* Dígitos de ancho fijo: evita el temblor del cronómetro y los importes. */
+.timer-display,
+.price-display,
+.station-badge-num,
+.billing-row strong,
+.total-amount {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+.price-display {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #2d6a4f;
+}
+
+/* Game Icon representations */
+.game-ball-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pool-ball {
+  width: 17px;
+  height: 17px;
+  background-color: #181c20;
+  color: #ffffff;
+  border-radius: 50%;
+  font-size: 9.5px;
+  font-weight: 800;
+  line-height: 17px;
+  text-align: center;
+}
+
+.carambola-balls {
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.dot.red {
+  background-color: #d90429;
+}
+
+.dot.yellow {
+  background-color: #f7b801;
+}
+
+.dot.white {
+  background-color: #ffffff;
+  border: 1px solid #73777e;
+}
+
+.mini-icon {
+  font-size: 16px;
+  color: #51625a;
+}
+
+/* Available card typography */
+.available-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #181c20;
+}
+
+.available-subtitle {
+  font-size: 11.5px;
+  color: #73777e;
+}
+
+.status-chip-available {
+  background-color: #d8f3dc;
+  color: #0f5132;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 9999px;
+}
+
+.status-chip-tourney {
+  background-color: #ebedf4;
+  color: #73777e;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 9999px;
+}
+
+/* Cobrar Button */
+.station-action-right {
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+.btn-cobrar {
+  min-width: 84px;
+  height: 34px;
+  padding: 0 16px;
+  background-color: #ebedf4;
+  color: #181c20;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: none;
+  /* sin transición: evita el parpadeo al cambiar de sesión */
+}
+
+.btn-cobrar:hover {
+  background-color: #dfe2e8;
+}
+
+.btn-cobrar-highlight {
+  background-color: #1b4332;
+  color: #ffffff;
+}
+
+.btn-cobrar-highlight:hover {
+  background-color: #012d1d;
+}
+
+/* Expanded Control Panel */
+.expanded-control-panel {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #ebedf4;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #181c20;
+  letter-spacing: 0.5px;
+}
+
+.panel-title .material-symbols-outlined {
+  font-size: 16px;
+  color: #43474d;
+}
+
+.panel-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #d8f3dc;
+  color: #0f5132;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 9999px;
+}
+
+.panel-status-chip.paused {
+  background-color: #ffdad6;
+  color: #ba1a1a;
+}
+
+.panel-status-dot {
+  width: 6px;
+  height: 6px;
+  background-color: currentColor;
+  border-radius: 50%;
+}
+
+.panel-buttons-row {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-panel-action {
+  flex: 1;
+  height: 40px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.btn-pause {
+  background-color: #1b4332;
+  color: #ffffff;
+}
+
+.btn-pause:hover {
+  background-color: #012d1d;
+}
+
+.btn-stop {
+  background-color: #ebedf4;
+  color: #181c20;
+  border: 1px solid #dfe2e8;
+}
+
+.btn-stop:hover {
+  background-color: #dfe2e8;
+}
+
+.stop-icon {
+  font-size: 15px;
+  color: #ba1a1a;
+}
+
+/* Quick Billing Modal */
+.billing-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.billing-modal {
+  width: 100%;
+  max-width: 400px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
+}
+
+.billing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.billing-header-info h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #181c20;
+}
+
+.billing-header-info p {
+  font-size: 12px;
+  color: #73777e;
+}
+
+.btn-close-modal {
+  color: #73777e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.billing-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid #ebedf4;
+  border-bottom: 1px solid #ebedf4;
+  padding: 12px 0;
+}
+
+.billing-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.5px;
+  color: #43474d;
+}
+
+.billing-row strong {
+  color: #181c20;
+}
+
+.billing-total-box {
+  background-color: #d8f3dc;
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.total-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f5132;
+}
+
+.total-amount {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f5132;
+}
+
+.billing-footer {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-cancel-billing {
+  flex: 1;
+  height: 44px;
+  background-color: #ebedf4;
+  color: #181c20;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.btn-confirm-billing {
+  flex: 2;
+  height: 44px;
+  background-color: #1b4332;
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* Floating Action Button (+ Nueva Sesión) */
+.fab-new-session {
+  position: fixed;
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  right: 16px;
+  height: 48px;
+  padding: 0 18px;
+  background-color: #1b4332;
+  color: #ffffff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(27, 67, 50, 0.4);
+  z-index: 40;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.fab-new-session:hover {
+  background-color: #012d1d;
+  transform: translateY(-2px);
+}
+
+.fab-new-session:active {
+  transform: translateY(0);
+}
+
+.fab-new-session .material-symbols-outlined {
+  font-size: 20px;
+}
+
+@media (min-width: 768px) {
+  .fab-new-session {
+    right: max(28px, calc((100vw - 1040px) / 2 + 20px));
+    bottom: 86px;
+    height: 50px;
+    padding: 0 22px;
+    font-size: 14.5px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(27, 67, 50, 0.35);
+  }
+}

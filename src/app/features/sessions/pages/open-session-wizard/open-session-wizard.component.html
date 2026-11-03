@@ -1,0 +1,290 @@
+<div class="wizard-overlay">
+  <div class="wizard-container">
+    <!-- STEP 1: Estación & Tipo de juego -->
+    @if (currentStep() === 1) {
+      <header class="wizard-header">
+        <button type="button" class="btn-back" (click)="onBack()" aria-label="Volver">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <div class="header-titles">
+          <h1 class="header-title">Nueva Sesión de Juego</h1>
+          <p class="header-subtitle">Registro rápido de sesión</p>
+        </div>
+      </header>
+
+      <main class="wizard-content">
+        <!-- Step progress indicator card -->
+        <section class="step-card">
+          <div class="step-card-header">
+            <span class="step-label">Paso 1 de 2 · Estación</span>
+            <span class="step-fraction">1/2</span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill step-1"></div>
+          </div>
+        </section>
+
+        <!-- TIPO DE JUEGO -->
+        <section class="section-group">
+          <h2 class="section-title">TIPO DE JUEGO</h2>
+          <div class="game-type-grid">
+            <!-- Billar Pool -->
+            <button
+              type="button"
+              class="game-card"
+              [class.selected]="selectedGameType() === 'pool'"
+              (click)="selectGameType('pool')"
+            >
+              <div class="game-icon-box" [class.selected]="selectedGameType() === 'pool'">
+                <svg viewBox="0 0 24 24" class="svg-icon" fill="currentColor">
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    fill="none"
+                  />
+                  <circle cx="12" cy="12" r="5" fill="currentColor" />
+                  <text
+                    x="12"
+                    y="14"
+                    font-size="6"
+                    font-family="Inter, sans-serif"
+                    font-weight="bold"
+                    fill="white"
+                    text-anchor="middle"
+                    dominant-baseline="central"
+                  >
+                    8
+                  </text>
+                </svg>
+              </div>
+              <span class="game-card-name">Billar Pool</span>
+            </button>
+
+            <!-- Carambola -->
+            <button
+              type="button"
+              class="game-card"
+              [class.selected]="selectedGameType() === 'carambola'"
+              (click)="selectGameType('carambola')"
+            >
+              <div class="game-icon-box" [class.selected]="selectedGameType() === 'carambola'">
+                <svg
+                  viewBox="0 0 24 24"
+                  class="svg-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="7" />
+                  <circle cx="12" cy="12" r="2" fill="currentColor" />
+                </svg>
+              </div>
+              <span class="game-card-name">Carambola</span>
+            </button>
+
+            <!-- Ping Pong -->
+            <button
+              type="button"
+              class="game-card"
+              [class.selected]="selectedGameType() === 'pingpong'"
+              (click)="selectGameType('pingpong')"
+            >
+              <div class="game-icon-box" [class.selected]="selectedGameType() === 'pingpong'">
+                <svg
+                  viewBox="0 0 24 24"
+                  class="svg-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="15.5" cy="8.5" r="5.5" />
+                  <path d="M11.5 12.5L6 18" stroke-linecap="round" />
+                  <circle cx="7" cy="7" r="1.5" fill="currentColor" />
+                </svg>
+              </div>
+              <span class="game-card-name">Ping Pong</span>
+            </button>
+
+            <!-- Futbolín -->
+            <button
+              type="button"
+              class="game-card"
+              [class.selected]="selectedGameType() === 'futbolin'"
+              (click)="selectGameType('futbolin')"
+            >
+              <div class="game-icon-box" [class.selected]="selectedGameType() === 'futbolin'">
+                <svg
+                  viewBox="0 0 24 24"
+                  class="svg-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <polygon points="12,7 16,10 14.5,15 9.5,15 8,10" fill="currentColor" />
+                </svg>
+              </div>
+              <span class="game-card-name">Futbolín</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- STATION GRID -->
+        <section class="section-group">
+          <h2 class="section-title">ESTACIÓN</h2>
+          <div class="stations-grid">
+            @for (station of availableStations(); track station.id) {
+              <button
+                type="button"
+                class="station-cell-card"
+                [class.selected]="selectedStationId() === station.id"
+                (click)="selectStation(station)"
+              >
+                <span class="station-cell-label">{{ station.label }}</span>
+              </button>
+            }
+
+            @if (availableStations().length === 0) {
+              <p class="empty-stations-msg">No hay estaciones disponibles en este momento.</p>
+            }
+          </div>
+        </section>
+      </main>
+
+      <!-- Sticky Bottom Action Bar Step 1 -->
+      <footer class="wizard-bottom-bar">
+        <div class="bottom-bar-summary">
+          @if (selectedStation()) {
+            <span>Estación {{ selectedStation()?.label }} · {{ selectedGameTypeName() }}</span>
+          } @else {
+            <span>Selecciona una estación</span>
+          }
+        </div>
+        <button
+          type="button"
+          class="btn-primary-action"
+          [disabled]="!selectedStationId() || selectedStation()?.status !== 'available'"
+          (click)="goToStep2()"
+        >
+          <span>Continuar a Jugadores</span>
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+      </footer>
+    }
+
+    <!-- STEP 2: Jugadores -->
+    @if (currentStep() === 2) {
+      <header class="wizard-header">
+        <button type="button" class="btn-back" (click)="goToStep1()" aria-label="Volver al paso 1">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <div class="header-titles">
+          <h1 class="header-title">Nueva Sesión de Juego</h1>
+        </div>
+      </header>
+
+      <main class="wizard-content">
+        <!-- Step progress indicator card -->
+        <section class="step-card">
+          <div class="step-card-header">
+            <span class="step-label">Paso 2 de 2 · Jugadores</span>
+            <span class="step-fraction">2/2</span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill step-2"></div>
+          </div>
+        </section>
+
+        <!-- Selected Station Pill Info Card -->
+        <section class="station-summary-card">
+          <div class="summary-left">
+            <div class="summary-icon-box">
+              <span class="material-symbols-outlined">sports_esports</span>
+            </div>
+            <div class="summary-details">
+              <span class="summary-station-name">Estación {{ selectedStation()?.label }}</span>
+              <span class="summary-game-tag">{{ selectedGameTypeName() }}</span>
+            </div>
+          </div>
+          <button type="button" class="btn-change-station" (click)="goToStep1()">
+            <span>Cambiar</span>
+            <span class="material-symbols-outlined">sync</span>
+          </button>
+        </section>
+
+        <!-- Jugadores Card -->
+        <section class="players-card">
+          <div class="players-header">
+            <h2 class="players-title">Jugadores</h2>
+            <span class="players-count-badge">{{ players().length }} agregados</span>
+          </div>
+
+          <!-- Add player input row -->
+          <div class="add-player-form">
+            <input
+              type="text"
+              class="player-input"
+              placeholder="Nombre..."
+              [ngModel]="newPlayerName()"
+              (ngModelChange)="newPlayerName.set($event)"
+              (keyup.enter)="addPlayer()"
+              aria-label="Nombre del jugador"
+            />
+            <button type="button" class="btn-add-player" (click)="addPlayer()">
+              <span class="material-symbols-outlined">add</span>
+              <span>Añadir</span>
+            </button>
+          </div>
+
+          <!-- Players list -->
+          <div class="players-list">
+            @for (player of players(); track player.id; let idx = $index) {
+              <div class="player-item">
+                <div class="player-item-left">
+                  <div class="player-avatar" [class.primary-avatar]="idx === 0">
+                    {{ player.initials }}
+                  </div>
+                  <span class="player-name">{{ player.name }}</span>
+                </div>
+
+                @if (idx > 0) {
+                  <button
+                    type="button"
+                    class="btn-remove-player"
+                    (click)="removePlayer(player.id)"
+                    aria-label="Eliminar jugador"
+                  >
+                    <span class="material-symbols-outlined">close</span>
+                  </button>
+                }
+              </div>
+            }
+
+            @if (players().length === 0) {
+              <p class="empty-players-msg">
+                Agrega jugadores o inicia la sesión con un jugador por defecto.
+              </p>
+            }
+          </div>
+        </section>
+      </main>
+
+      <!-- Sticky Bottom Action Bar Step 2 -->
+      <footer class="wizard-bottom-bar">
+        <div class="bottom-bar-summary">
+          <span
+            >Estación {{ selectedStation()?.label }} · {{ players().length }}
+            {{ players().length === 1 ? 'jugador' : 'jugadores' }}</span
+          >
+        </div>
+        <button type="button" class="btn-primary-action btn-start-session" (click)="startSession()">
+          <span class="material-symbols-outlined">play_arrow</span>
+          <span>Iniciar Sesión</span>
+        </button>
+      </footer>
+    }
+  </div>
+</div>
